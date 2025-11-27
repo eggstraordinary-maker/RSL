@@ -3,11 +3,32 @@ import BottomNav from './components/BottomNav';
 import Dictionary from './pages/Dictionary';
 import Translator from './pages/Translator';
 import Learning from './pages/Learning';
+import LoginPage from './pages/LogIn';
 
 type Tab = 'dictionary' | 'translator' | 'learning';
 
 const App: React.FC = () => {
   const [tab, setTab] = useState<Tab>('dictionary');
+  const [showLogin, setShowLogin] = useState(false);
+
+  if (showLogin) {
+    return (
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
+        <header className="bg-white shadow-sm">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
+              <div className="text-lg font-semibold">Жестовый помощник</div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 container mx-auto px-4 py-6">
+          <LoginPage onClose={() => setShowLogin(false)} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
@@ -17,12 +38,21 @@ const App: React.FC = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
             <div className="text-lg font-semibold">Жестовый помощник</div>
           </div>
-          <button 
-            onClick={() => window.location.href = '/register'}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
-          >
-            Регистрация
-          </button>
+          <div className="flex items-center gap-2">
+           <button
+              onClick={() => setShowLogin(true)}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+            >
+              Войти
+            </button>
+
+            <button 
+              onClick={() => window.location.href = '/register'}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
+            >
+              Регистрация
+            </button>
+          </div>
         </div>
       </header>
 
