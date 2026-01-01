@@ -11,6 +11,7 @@ const PasswordReset: React.FC<Props> = ({ onBack }) => {
     e.preventDefault();
     console.log("Password reset requested for:", email);
     // Здесь будет запрос к серверу
+    alert("Запрос на сброс пароля отправлен (демо)");
   };
 
   return (

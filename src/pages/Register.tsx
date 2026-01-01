@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext'; // Импортируем useAuth
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,9 @@ export default function Register() {
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const { register } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,12 +20,46 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Здесь будет логика регистрации
-    console.log('Регистрация:', formData);
-    alert('Регистрация успешна! (демо)');
+    setError('');
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
+    try {
+      await register(formData.name, formData.email, formData.password);
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Ошибка регистрации');
+    }
   };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              Регистрация успешна!
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              На вашу почту отправлено письмо для подтверждения регистрации.
+            </p>
+            <button
+              onClick={() => window.history.back()}
+              className="mt-4 text-sm text-indigo-600 hover:text-indigo-500"
+            >
+              Вернуться на главную
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -35,6 +73,8 @@ export default function Register() {
             Создайте аккаунт для сохранения прогресса
           </p>
         </div>
+        
+        {error && <div className="bg-red-100 text-red-700 p-2 rounded">{error}</div>}
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
