@@ -42,7 +42,7 @@ export default function Register() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
-            <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
+            <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">РЖЯ</div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Регистрация успешна!
             </h2>
@@ -65,7 +65,7 @@ export default function Register() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
+          <div className="mx-auto h-12 w-12 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">РЖЯ</div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Регистрация
           </h2>

@@ -32,8 +32,8 @@ const AppContent: React.FC = () => {
         <header className="bg-white shadow-sm">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
-              <div className="text-lg font-semibold">Жестовый помощник</div>
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">РЖЯ</div>
+              <div className="text-lg font-semibold">РЖЯ помощник</div>
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
@@ -85,7 +85,7 @@ const AppContent: React.FC = () => {
         <div className="text-center">
           <div className="mx-auto h-20 w-20 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">ЖП</div>
           <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Жестовый помощник
+            РЖЯ помощник
           </h1>
           <p className="mt-2 text-gray-600">
             Распознавание и изучение русского жестового языка
