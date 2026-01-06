@@ -1,0 +1,12 @@
+{
+  "app_title": "Sign Language Assistant",
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "welcome": "Welcome",
+  "save": "Save",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success"
+}

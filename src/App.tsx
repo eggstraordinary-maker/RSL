@@ -5,6 +5,7 @@ import Translator from './pages/Translator';
 import Learning from './pages/Learning';
 import LoginPage from './pages/LogIn';
 import { useAuth } from './contexts/AuthContext';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 type Tab = 'dictionary' | 'translator' | 'learning';
 
@@ -33,6 +34,9 @@ const AppContent: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">R</div>
               <div className="text-lg font-semibold">Жестовый помощник</div>
+            </div>
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600 hidden sm:inline">

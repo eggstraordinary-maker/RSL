@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PasswordReset from "./PasswordReset";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from 'react-i18next';
 
 // ОБНОВЛЕННЫЙ интерфейс - добавлен onGuestMode
 interface LoginProps {
@@ -15,6 +16,7 @@ const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode 
   const [showForgot, setShowForgot] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { t } = useTranslation(['auth', 'common']);
 
   // ОБНОВЛЕННЫЙ PasswordReset вызов - добавлен onBack
   if (showForgot) return <PasswordReset onBack={() => setShowForgot(false)} />;
@@ -32,29 +34,29 @@ const handleLogin = async (e: React.FormEvent) => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-white">
-      <h2 className="text-2xl font-semibold mb-4">Вход в систему</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('auth:login_title')}</h2>
 
       {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
 
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block mb-1">Email</label>
+          <label className="block mb-1">{t('auth:email')}</label>
           <input
             className="w-full p-2 border rounded-md"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Введите email"
+            placeholder={t('auth:email')}
           />
         </div>
 
         <div>
-          <label className="block mb-1">Пароль</label>
+          <label className="block mb-1">{t('auth:password')}</label>
           <input
             type="password"
             className="w-full p-2 border rounded-md"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Введите пароль"
+            placeholder={t('auth:password')}
           />
         </div>
 
@@ -62,7 +64,7 @@ const handleLogin = async (e: React.FormEvent) => {
           type="submit"
           className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
         >
-          Войти
+          {t('common:login')}
         </button>
 
         <button

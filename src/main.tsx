@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import EmailVerification from './pages/EmailVerification'
 import PasswordResetPage from './pages/PasswordResetPage' // Новый компонент
 import { AuthProvider } from './contexts/AuthContext'
+import './i18n/config';
 import './styles/index.css'
 
 // Создаем обертку для PasswordReset с навигацией
