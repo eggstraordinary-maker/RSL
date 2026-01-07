@@ -1,23 +1,18 @@
+// src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { User, LoginResponse } from '../types/api';
 
-// interface User {
-//   id: number;
-//   public_id: string;
-//   email: string;
-//   username: string;
-//   is_verified: boolean;
-// }
-
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isGuest: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
-  isLoading: boolean;
-  error: string | null;
+  enterGuestMode: () => void;
+  exitGuestMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,10 +20,39 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('access_token'));
+  const [isGuest, setIsGuest] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Устанавливаем токен в axios по умолчанию
+  // Проверяем состояние при загрузке
+  useEffect(() => {
+    const loadUser = async () => {
+      // Сначала проверяем гостевой режим
+      const guestMode = localStorage.getItem('guest_mode') === 'true';
+      
+      if (guestMode) {
+        setIsGuest(true);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Затем проверяем токен и загружаем пользователя
+      if (token) {
+        try {
+          const response = await axios.get<User>('http://localhost:8000/users/me');
+          setUser(response.data);
+        } catch (error) {
+          console.error('Ошибка загрузки пользователя', error);
+          setToken(null);
+          localStorage.removeItem('access_token');
+        }
+      }
+      setIsLoading(false);
+    };
+
+    loadUser();
+  }, [token]);
+
+  // Настройка axios заголовков
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -39,63 +63,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [token]);
 
-  // При загрузке приложения проверяем, есть ли токен и загружаем пользователя
-  useEffect(() => {
-    const loadUser = async () => {
-      if (token) {
-        try {
-          const response = await axios.get<User>('http://localhost:8000/users/me');
-          setUser(response.data);
-          setError(null);
-          // Удаляем демо-режим при успешной загрузке пользователя
-          localStorage.removeItem('guest_mode');
-        } catch (error: any) {
-          console.error('Ошибка загрузки пользователя', error);
-          setError('Не удалось загрузить данные пользователя');
-          setToken(null);
-          setUser(null);
-        }
-      }
-      setIsLoading(false);
-    };
+  const enterGuestMode = () => {
+    setIsGuest(true);
+    localStorage.setItem('guest_mode', 'true');
+    // Удаляем токены если есть
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  };
 
-    loadUser();
-  }, [token]);
+  const exitGuestMode = () => {
+    setIsGuest(false);
+    localStorage.removeItem('guest_mode');
+  };
 
   const login = async (email: string, password: string) => {
-    setError(null);
-    setIsLoading(true);
-    
-    try {
-      const formData = new FormData();
-      formData.append('username', email);
-      formData.append('password', password);
+    const formData = new FormData();
+    formData.append('username', email);
+    formData.append('password', password);
 
-      const response = await axios.post<LoginResponse>(
-        'http://localhost:8000/auth/login', 
-        formData, 
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
+    const response = await axios.post<LoginResponse>(
+      'http://localhost:8000/auth/login',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
 
-      const { access_token, refresh_token } = response.data;
-      
-      // Удаляем демо-режим при успешном входе
-      localStorage.removeItem('guest_mode');
-      
-      // Устанавливаем токен - это запустит useEffect для загрузки пользователя
-      setToken(access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Ошибка входа');
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
+    const { access_token, refresh_token } = response.data;
+    setToken(access_token);
+    localStorage.setItem('refresh_token', refresh_token);
+    // Выходим из гостевого режима при входе
+    exitGuestMode();
   };
 
   const register = async (username: string, email: string, password: string) => {
@@ -104,17 +106,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
     });
-    // После регистрации можно автоматически войти или перенаправить на страницу входа
+    // После регистрации автоматически входим
+    await login(email, password);
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
+    setIsGuest(false);
+    localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('guest_mode');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, isLoading, error }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isGuest,
+        isLoading,
+        login,
+        register,
+        logout,
+        enterGuestMode,
+        exitGuestMode,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,6 @@
+// src/components/BottomNav.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Tab = 'dictionary' | 'translator' | 'learning';
 
@@ -20,20 +22,66 @@ const Icon = {
   ),
 };
 
-export default function BottomNav({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
-  const button = (t: Tab, label: string) => {
-    const isActive = active === t;
+const TabLabels = {
+  dictionary: 'dictionary',
+  translator: 'translator',
+  learning: 'learning',
+};
+
+interface BottomNavProps {
+  active: Tab;
+  availableTabs: Tab[];
+  onChange: (t: Tab) => void;
+}
+
+export default function BottomNav({ active, availableTabs, onChange }: BottomNavProps) {
+  const { t } = useTranslation();
+
+  const button = (tab: Tab, labelKey: string) => {
+    const isAvailable = availableTabs.includes(tab);
+    const isActive = active === tab;
+
     return (
       <button
         aria-current={isActive ? 'true' : undefined}
-        onClick={() => onChange(t)}
-        className={`flex-1 py-2 px-2 flex flex-col items-center justify-center focus:outline-none ${isActive ? 'text-indigo-600' : 'text-gray-600'}`}
+        onClick={() => {
+          if (!isAvailable) {
+            // Если вкладка недоступна, ничего не делаем
+            // (в App.tsx уже есть обработка показа модального окна)
+            return;
+          }
+          onChange(tab);
+        }}
+        className={`flex-1 py-2 px-2 flex flex-col items-center justify-center focus:outline-none transition-all ${
+          isActive
+            ? 'text-indigo-600'
+            : isAvailable
+            ? 'text-gray-600 hover:text-indigo-500'
+            : 'text-gray-300 cursor-not-allowed'
+        }`}
+        disabled={!isAvailable}
+        title={!isAvailable ? t('requires_authentication') : ''}
       >
-        <div className="mb-1">{Icon[t]}</div>
-        <div className="text-xs font-medium">{label}</div>
+        <div className="mb-1 relative">
+          {Icon[tab]}
+          {!isAvailable && (
+            <div className="absolute -top-1 -right-1">
+              <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
+        </div>
+        <div className="text-xs font-medium">{t(labelKey)}</div>
       </button>
     );
   };
 
-  return <nav className="bg-white/95 backdrop-blur border rounded-3xl shadow-lg flex p-1">{button('translator', 'Переводчик')}{button('dictionary', 'Словарь')}{button('learning', 'Обучение')}</nav>;
+  return (
+    <nav className="bg-white/95 backdrop-blur border rounded-3xl shadow-lg flex p-1">
+      {button('dictionary', TabLabels.dictionary)}
+      {button('translator', TabLabels.translator)}
+      {button('learning', TabLabels.learning)}
+    </nav>
+  );
 }

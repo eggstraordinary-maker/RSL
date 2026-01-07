@@ -76,10 +76,11 @@ const handleLogin = async (e: React.FormEvent) => {
         </button>
       </form>
 
-      {/* ДОБАВЬТЕ ЭТОТ БЛОК ДЛЯ ГОСТЕВОГО РЕЖИМА */}
+      // В LoginPage.tsx добавьте обработку гостевого режима
+      // После существующей формы добавьте:
       <div className="mt-6 text-center space-y-3">
         <div className="text-sm text-gray-600">
-          Нет аккаунта?{' '}
+          {t('auth:no_account')}{' '}
           <button
             type="button"
             onClick={() => {
@@ -88,19 +89,22 @@ const handleLogin = async (e: React.FormEvent) => {
             }}
             className="text-indigo-600 hover:text-indigo-800 font-medium"
           >
-            Зарегистрироваться
+            {t('auth:register_here')}
           </button>
         </div>
         
-        {/* <div className="border-t pt-3">
+        <div className="border-t pt-3">
           <button
             type="button"
-            onClick={onGuestMode}
+            onClick={() => {
+              onClose();
+              // Уже обрабатывается в родительском компоненте
+            }}
             className="w-full py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
           >
-            Продолжить как гость (демо)
+            {t('auth:guest_mode')}
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );
