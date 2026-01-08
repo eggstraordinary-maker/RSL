@@ -3,7 +3,6 @@ import PasswordReset from "./PasswordReset";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from 'react-i18next';
 
-// ОБНОВЛЕННЫЙ интерфейс - добавлен onGuestMode
 interface LoginProps {
   onClose: () => void;
   onLoginSuccess: () => void;
@@ -18,7 +17,6 @@ const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode 
   const { login } = useAuth();
   const { t } = useTranslation(['auth', 'common']);
 
-  // ОБНОВЛЕННЫЙ PasswordReset вызов - добавлен onBack
   if (showForgot) return <PasswordReset onBack={() => setShowForgot(false)} />;
 
   const handleLogin = async (e: React.FormEvent) => {
