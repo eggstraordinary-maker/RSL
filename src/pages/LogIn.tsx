@@ -3,11 +3,10 @@ import PasswordReset from "./PasswordReset";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from 'react-i18next';
 
-// ОБНОВЛЕННЫЙ интерфейс - добавлен onGuestMode
 interface LoginProps {
   onClose: () => void;
   onLoginSuccess: () => void;
-  onGuestMode: () => void; // Добавьте эту строку
+  onGuestMode: () => void; 
 }
 
 const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode }) => {
@@ -18,7 +17,6 @@ const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode 
   const { login } = useAuth();
   const { t } = useTranslation(['auth', 'common']);
 
-  // ОБНОВЛЕННЫЙ PasswordReset вызов - добавлен onBack
   if (showForgot) return <PasswordReset onBack={() => setShowForgot(false)} />;
 
 const handleLogin = async (e: React.FormEvent) => {
@@ -26,7 +24,7 @@ const handleLogin = async (e: React.FormEvent) => {
   setError("");
   try {
     await login(username, password);
-    onLoginSuccess(); // Просто закрываем модальное окно
+    onLoginSuccess(); 
   } catch (err: any) {
     setError(err.response?.data?.detail || "Ошибка входа");
   }
@@ -76,8 +74,6 @@ const handleLogin = async (e: React.FormEvent) => {
         </button>
       </form>
 
-      // В LoginPage.tsx добавьте обработку гостевого режима
-      // После существующей формы добавьте:
       <div className="mt-6 text-center space-y-3">
         <div className="text-sm text-gray-600">
           {t('auth:no_account')}{' '}
@@ -98,7 +94,6 @@ const handleLogin = async (e: React.FormEvent) => {
             type="button"
             onClick={() => {
               onClose();
-              // Уже обрабатывается в родительском компоненте
             }}
             className="w-full py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
           >

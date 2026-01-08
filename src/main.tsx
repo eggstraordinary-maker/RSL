@@ -4,12 +4,11 @@ import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from '
 import App from './App'
 import Register from './pages/Register'
 import EmailVerification from './pages/EmailVerification'
-import PasswordResetPage from './pages/PasswordResetPage' // Новый компонент
+import PasswordResetPage from './pages/PasswordResetPage' 
 import { AuthProvider } from './contexts/AuthContext'
 import './i18n/config';
 import './styles/index.css'
 
-// Создаем обертку для PasswordReset с навигацией
 function PasswordResetWrapper() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();

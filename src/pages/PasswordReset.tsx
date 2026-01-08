@@ -10,7 +10,6 @@ const PasswordReset: React.FC<Props> = ({ onBack }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Password reset requested for:", email);
-    // Здесь будет запрос к серверу
     alert("Запрос на сброс пароля отправлен (демо)");
   };
 

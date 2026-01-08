@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useState, useEffect } from 'react';
 import BottomNav from './components/BottomNav';
 import Dictionary from './pages/Dictionary';
@@ -21,7 +20,7 @@ const AuthChoicePage: React.FC<{ onShowLogin: () => void }> = ({ onShowLogin }) 
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="mx-auto h-20 w-20 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-            ЖП
+            РЖЯ
           </div>
           <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
             {t('app_title')}
@@ -93,7 +92,7 @@ const MainApp: React.FC<{ initialTab?: Tab }> = ({ initialTab = 'dictionary' }) 
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-              R
+              РЖЯ
             </div>
             <div className="text-lg font-semibold">{t('app_title')}</div>
           </div>
