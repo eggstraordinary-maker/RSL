@@ -29,6 +29,15 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email/:token" element={<EmailVerification />} />
           <Route path="/reset-password/:token" element={<PasswordResetWrapper />} />
+          <Route path="/exit-guest" element={
+            <div style={{ display: 'none' }}>
+              {(() => {
+                localStorage.removeItem('guest_mode');
+                // window.location.href = '/';
+                return null;
+              })()}
+            </div>
+          } />
         </Routes>
       </AuthProvider>
     </Router>

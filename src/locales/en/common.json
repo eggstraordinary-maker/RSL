@@ -16,5 +16,6 @@
   "learning": "Learning",
   "save": "Save",
   "cancel": "Cancel",
-  "loading": "Loading..."
+  "loading": "Loading...", 
+  "exit_guest_mode": "Exit Guest Mode"
 }

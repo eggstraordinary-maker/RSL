@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const AuthChoice: React.FC = () => {
   return (
@@ -19,28 +18,30 @@ const AuthChoice: React.FC = () => {
           <h2 className="text-xl font-semibold text-center">Добро пожаловать!</h2>
           
           <div className="space-y-4">
-            <Link
-              to="/login"
+            <button
+              onClick={() => {
+                // Эта логика теперь обрабатывается в родительском компоненте App.tsx
+              }}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             >
               Войти в аккаунт
-            </Link>
+            </button>
             
-            <Link
-              to="/register"
+            <button
+              onClick={() => {
+                window.location.href = '/register';
+              }}
               className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             >
               Создать новый аккаунт
-            </Link>
+            </button>
           </div>
           
           <div className="text-center text-sm text-gray-500">
             <p>Или продолжите как гость с ограниченным доступом</p>
             <button
               onClick={() => {
-                // Логика для гостевого доступа
-                localStorage.setItem('guest_mode', 'true');
-                window.location.href = '/';
+                // Эта логика теперь обрабатывается в родительском компоненте App.tsx
               }}
               className="mt-2 text-indigo-600 hover:text-indigo-500 font-medium"
             >

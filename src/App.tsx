@@ -57,7 +57,7 @@ const AuthChoicePage: React.FC<{ onShowLogin: () => void }> = ({ onShowLogin }) 
             <button
               onClick={() => {
                 enterGuestMode();
-                window.location.reload();
+                // window.location.reload();
               }}
               className="mt-2 text-indigo-600 hover:text-indigo-500 font-medium"
             >
@@ -109,6 +109,16 @@ const MainApp: React.FC<{ initialTab?: Tab }> = ({ initialTab = 'dictionary' }) 
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
                 >
                   {t('login')}
+                </button>
+                <button
+                  onClick={() => {
+                    logout();
+                    // Выходим из гостевого режима
+                    localStorage.removeItem('guest_mode');
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+                >
+                  {t('exit_guest_mode') || 'Выйти'}
                 </button>
               </div>
             ) : (
@@ -188,7 +198,7 @@ const MainApp: React.FC<{ initialTab?: Tab }> = ({ initialTab = 'dictionary' }) 
               onClose={() => setShowLogin(false)}
               onLoginSuccess={() => {
                 setShowLogin(false);
-                window.location.reload();
+                // window.location.reload();
               }}
               onGuestMode={() => {
                 // Пользователь уже в гостевом режиме, ничего не делаем
@@ -226,7 +236,31 @@ const App: React.FC = () => {
   }
 
   // 3. Страница выбора (не авторизован и не гость)
-  return <AuthChoicePage onShowLogin={() => setShowLogin(true)} />;
+  return (
+    <>
+      <AuthChoicePage onShowLogin={() => setShowLogin(true)} />
+      
+      {showLogin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <LoginPage
+              onClose={() => setShowLogin(false)}
+              onLoginSuccess={() => {
+                setShowLogin(false);
+                // Успешный вход - состояние обновится автоматически через AuthContext
+              }}
+              onGuestMode={() => {
+                // В гостевой режим из начальной страницы
+                const { enterGuestMode } = useAuth();
+                enterGuestMode();
+                setShowLogin(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default App;

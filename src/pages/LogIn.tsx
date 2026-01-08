@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 interface LoginProps {
   onClose: () => void;
   onLoginSuccess: () => void;
-  onGuestMode: () => void; // Добавьте эту строку
+  onGuestMode: () => void;
 }
 
 const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode }) => {
@@ -21,16 +21,16 @@ const LoginPage: React.FC<LoginProps> = ({ onClose, onLoginSuccess, onGuestMode 
   // ОБНОВЛЕННЫЙ PasswordReset вызов - добавлен onBack
   if (showForgot) return <PasswordReset onBack={() => setShowForgot(false)} />;
 
-const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError("");
-  try {
-    await login(username, password);
-    onLoginSuccess(); // Просто закрываем модальное окно
-  } catch (err: any) {
-    setError(err.response?.data?.detail || "Ошибка входа");
-  }
-};
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await login(username, password);
+      onLoginSuccess(); // Просто закрываем модальное окно
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Ошибка входа");
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-white">
@@ -62,22 +62,30 @@ const handleLogin = async (e: React.FormEvent) => {
 
         <button
           type="submit"
-          className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="w-full py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
         >
           {t('common:login')}
         </button>
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-full py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition"
-        >
-          Назад
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setShowForgot(true)}
+            className="w-full py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition"
+          >
+            {t('auth:forgot_password') || "Забыли пароль?"}
+          </button>
+          
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 transition"
+          >
+            {t('common:cancel') || "Отмена"}
+          </button>
+        </div>
       </form>
 
-      // В LoginPage.tsx добавьте обработку гостевого режима
-      // После существующей формы добавьте:
       <div className="mt-6 text-center space-y-3">
         <div className="text-sm text-gray-600">
           {t('auth:no_account')}{' '}
@@ -90,19 +98,6 @@ const handleLogin = async (e: React.FormEvent) => {
             className="text-indigo-600 hover:text-indigo-800 font-medium"
           >
             {t('auth:register_here')}
-          </button>
-        </div>
-        
-        <div className="border-t pt-3">
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              // Уже обрабатывается в родительском компоненте
-            }}
-            className="w-full py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
-          >
-            {t('auth:guest_mode')}
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { User, LoginResponse } from '../types/api';
 
@@ -20,37 +20,46 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('access_token'));
-  const [isGuest, setIsGuest] = useState(false);
+  const [isGuest, setIsGuest] = useState(() => {
+    // Инициализируем из localStorage при первом рендере
+    return localStorage.getItem('guest_mode') === 'true';
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const isInitialMount = useRef(true);
 
   // Проверяем состояние при загрузке
-  useEffect(() => {
+    useEffect(() => {
     const loadUser = async () => {
-      // Сначала проверяем гостевой режим
-      const guestMode = localStorage.getItem('guest_mode') === 'true';
-      
-      if (guestMode) {
-        setIsGuest(true);
+      if (isGuest) {
+        // Если гость, не делаем запросов к API
         setIsLoading(false);
         return;
       }
       
-      // Затем проверяем токен и загружаем пользователя
-      if (token) {
+      const storedToken = localStorage.getItem('access_token');
+      if (storedToken) {
         try {
+          // Устанавливаем заголовок для запроса
+          axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
           const response = await axios.get<User>('http://localhost:8000/users/me');
           setUser(response.data);
+          setToken(storedToken);
         } catch (error) {
           console.error('Ошибка загрузки пользователя', error);
-          setToken(null);
+          // Если токен невалиден, очищаем его
           localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          delete axios.defaults.headers.common['Authorization'];
         }
       }
       setIsLoading(false);
     };
 
-    loadUser();
-  }, [token]);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      loadUser();
+    }
+  }, []);
 
   // Настройка axios заголовков
   useEffect(() => {
@@ -98,6 +107,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('refresh_token', refresh_token);
     // Выходим из гостевого режима при входе
     exitGuestMode();
+    try {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+      const userResponse = await axios.get<User>('http://localhost:8000/users/me');
+      setUser(userResponse.data);
+    } catch (error) {
+      console.error('Ошибка загрузки пользователя после входа', error);
+      throw error;
+    }
   };
 
   const register = async (username: string, email: string, password: string) => {
@@ -117,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('guest_mode');
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (
