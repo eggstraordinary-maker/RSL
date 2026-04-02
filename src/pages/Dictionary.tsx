@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {LeftTOC} from '../components/LeftTOC';
+import LeftTOC from '../components/LeftTOC';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -48,33 +48,10 @@ export default function Dictionary() {
   }, []);
 
   useEffect(() => {
-    if (!selectedObjectName) return;
+  if (!selectedObjectName) return;
 
-    const fetchVideoUrl = async () => {
-      setLoadingVideo(true);
-      setVideoError(null);
-      setVideoUrl(null);
-
-      try {
-        const response = await fetch(`${API_URL}/videos/${encodeURIComponent(selectedObjectName)}`);
-        if (!response.ok) {
-          if (response.status === 404) {
-            setVideoError('Видео не найдено');
-          } else {
-            setVideoError('Ошибка загрузки видео');
-          }
-          return;
-        }
-        const data = await response.json();
-        setVideoUrl(data.url);
-      } catch (err) {
-        setVideoError('Ошибка соединения с сервером');
-      } finally {
-        setLoadingVideo(false);
-      }
-    };
-
-    fetchVideoUrl();
+  const url = `${API_URL}/videos/stream/${encodeURIComponent(selectedObjectName)}`;
+  setVideoUrl(url);
   }, [selectedObjectName]);
 
   const handleSelect = (selectedDisplay: string) => {
@@ -85,10 +62,7 @@ export default function Dictionary() {
     }
   };
 
-  const tocItems = videos.map(v => ({
-  id: v.object_name,        
-  label: v.description || v.filename
-  }));
+  const tocItems = videos.map(v => v.description || v.filename);
 
   if (loadingList) {
     return <div className="text-center py-8">Загрузка списка жестов...</div>;
